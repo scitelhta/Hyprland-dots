@@ -1,0 +1,16 @@
+
+(suntray.py:43248): Gdk-CRITICAL **: 11:50:00.978: gdk_window_thaw_toplevel_updates: assertion 'window->update_and_descendants_freeze_count > 0' failed
+
+(moontray.py:43219): Gdk-CRITICAL **: 11:50:00.978: gdk_window_thaw_toplevel_updates: assertion 'window->update_and_descendants_freeze_count > 0' failed
+
+(suntray.py:43248): Gdk-CRITICAL **: 11:51:41.446: gdk_window_thaw_toplevel_updates: assertion 'window->update_and_descendants_freeze_count > 0' failed
+
+(moontray.py:43219): Gdk-CRITICAL **: 11:51:41.446: gdk_window_thaw_toplevel_updates: assertion 'window->update_and_descendants_freeze_count > 0' failed
+
+(suntray.py:43248): Gtk-WARNING **: 14:22:09.767: Theme parsing error: gtk-dark.css:9349:21: Not using units is deprecated. Assuming 'px'.
+
+(moontray.py:43219): Gtk-WARNING **: 14:22:10.370: Theme parsing error: gtk-dark.css:9349:21: Not using units is deprecated. Assuming 'px'.
+
+(moontray.py:43219): Gtk-WARNING **: 14:22:13.293: Theme parsing error: gtk-dark.css:9349:21: Not using units is deprecated. Assuming 'px'.
+
+(suntray.py:43248): Gtk-WARNING **: 14:22:13.540: Theme parsing error: gtk-dark.css:9349:21: Not using units is deprecated. Assuming 'px'.

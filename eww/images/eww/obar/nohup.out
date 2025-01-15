@@ -1,0 +1,12 @@
+ 2024-01-02T16:57:35.030Z INFO  eww > Initializing Eww server. (/run/user/1000/eww-server_4b55e06c6937db39)
+Run `eww logs` to see any errors while editing your configuration.
+ 2024-01-02T16:57:35.030Z INFO  eww::server > Loading paths: config-dir: /home/sergio/.config/eww, ipc-socket: /run/user/1000/eww-server_4b55e06c6937db39, log-file: /home/sergio/.cache/eww_4b55e06c6937db39.log
+
+┏━━━━━━━━━━━━━━━━━━━━━━━┓
+┃Initializing eww daemon┃
+┗━━━━━━━━━━━━━━━━━━━━━━━┛
+    
+
+(eww:14417): dbind-WARNING **: 11:57:35.069: Couldn't register with accessibility bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+ 2024-01-02T16:57:35.137Z INFO  eww::ipc_server > IPC server initialized
+Gdk-Message: 12:28:45.201: Error reading events from display: Broken pipe

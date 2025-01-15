@@ -1,0 +1,11 @@
+{
+  "term": {
+    "command": "kitty",
+    "animation": "fromTop",
+    "margin": 50
+  },
+  "volume": {
+    "command": "pavucontrol",
+    "animation": "fromRight"
+  }
+}

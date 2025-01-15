@@ -1,0 +1,25 @@
+https://github.com/elkowar/eww
+https://github.com/hyprwm/hyprland-plugins
+https://github.com/LGFae/swww
+ --recursive https://github.com/hyprwm/Hyprland
+  https://github.com/hyprwm/hyprland-protocols
+https://github.com/dustydecapod/wlr-gamma-service
+    submodule update --init --recursive\n\n
+https://github.com/coldfix/udiskie
+https://github.com/wmww/gtk4-layer-shell
+https://github.com/abenz1267/walker
+https://github.com/System64fumo/sysmenu
+  https://github.com/jjsullivan5196/wvkbd
+  https://github.com/donovanglover/hyprnome
+  https://github.com/nwg-piotr/nwg-drawer
+
+
+
+wofi cargo-c dbusmenu libdbusmenu-devel libgtk-layer-shell-devel hyprlock hypridle hyprcursor hyprcursor-devel wofi wl-clipboard blueman    libdrm-devel
+  libinput libinput-devel hyprutils-devel hyprutils hyprgraphics-devel hyprgraphics aquamarine aquamarine-devel libinput libinput-devel hyprlang hyprlang-devel thunar
+ lz4-devel lz4 egl-gbm-devel wayland-protocols-devel wayland-protocols mesalib mesalib-devel libglu-devel re2-devel hyprwayland-scanner
+
+  xcb-util-devel   xcb-util-wm-devel xcb-proto util-macros-devel
+   libxcb-devel xcb-util-devel xcb-util-errors-devel tomlplusplus-devel dunst graphene-devel libgtk-4-devel libgtk-layer-shell-devel
+ libvala-devel libvala vala gtk-doc-devel kf6-kservice it kservice  pavucontrol playerctl libgtkmm-4-devel
+ libvips libvips-devel

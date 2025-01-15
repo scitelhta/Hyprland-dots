@@ -1,0 +1,12 @@
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: vaapitest: ERROR (t=0.357278) [GFX1-]: vaapitest: ERROR
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: vaapitest: ERROR (t=0.357278) |[1][GFX1-]: vaapitest: VA-API test failed: failed to initialise VAAPI connection.
+ (t=0.357384) [GFX1-]: vaapitest: VA-API test failed: failed to initialise VAAPI connection.
+
+console.error: ({})
+JavaScript error: resource://gre/modules/XULStore.sys.mjs, line 60: Error: Can't find profile directory.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Crash Annotation GraphicsCriticalError: |[C0][GFX1-]: CompositorBridgeChild receives IPC close with reason=AbnormalShutdown (t=367.163) Exiting due to channel error.

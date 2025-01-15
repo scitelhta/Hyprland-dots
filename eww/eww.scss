@@ -1,0 +1,103 @@
+*{
+  all:unset;
+  font-family: 'JetBrains Mono Nerd Font';
+/*  color: rgba(#ffffff,1); */
+/*font-size:17px;*/
+}
+
+$bg: rgba(#000060,0.6);
+$fg: #dddddd;
+$shadow: rgba(#ffffff,0.3);
+$border_col: rgba(#cccccc,0.18);
+$best_so_far: rgba(255,255,255,0.1); 
+
+.bar {
+	background-color: transparent;	
+}
+
+.stray {
+/*	border: 1px solid rgba(255, 255, 0, 0.9);*/
+}
+.as{
+	padding:5px;
+	color: #ffff00;
+	background-color: rgba(0, 0, 0, 1);
+}
+.ws {
+}
+.ns {
+ background-color: rgba(255, 255, 255, 0.2);
+}
+
+.si {
+	border: 1px solid rgba(255, 0, 0, 0.9);
+}
+.main-container {
+	margin: 8px 12px 0px 12px;
+}
+
+
+.workspaces,.sidestuff,.time {
+ font-size: 15px;
+
+
+}
+.workspaces,.sidestuff,.time, .music {
+/* background-image: linear-gradient(to right, #e4c9af 30%, #f2cdcd 50%, #e0b089 100% *50);*/
+	 background-image: linear-gradient(to right,  rgba(#333300,0.6) 0%,   rgba(#003300,0.6) 30%,   rgba(#1a0033, 0.8) 50%,  rgba(#000066,0.8) 100%);
+
+
+	border-radius: 10px;
+	color: $fg;
+	margin-bottom: 5px;
+	border: 1px solid $border_col;
+	padding: 6px 2px 4px 2px;
+ 	box-shadow: 2px 2px 2px $shadow;
+	min-height: 25px;
+}
+
+.music {
+	font-size:12px;
+}
+
+.user1 {
+	background-color: $fg ;
+	color: $bg;
+}
+.inicio {
+	
+}
+.sergio{
+	margin-left: 5px;
+	  font-family:Arial;
+}
+.time {
+	margin-bottom: 1px;
+	padding: 0px 20px 0px 20px;
+}
+.time1 {
+  font-size:30px;
+  margin-left:10px;
+  margin-right:10px;
+
+}
+
+.metric {
+	margin-left: 10px;
+}
+.imagemetric{
+	margin-right:2px;
+	opacity: 1;
+}
+
+.label2 {
+	margin-left: 2px;
+	margin-bottom:0px;
+}
+.sidestuff {
+	
+}
+
+.systray{
+  padding-right:8px;
+}

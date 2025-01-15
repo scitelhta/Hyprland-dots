@@ -1,0 +1,521 @@
+      
+
+(deflisten workspace0 "hyprland-workspaces eDP-1")
+(deflisten workspace1 "hyprland-workspaces DP-1")
+(deflisten workspace2 "hyprland-workspaces HDMI-A-1")
+
+
+
+ 
+;(deflisten music
+;  "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")
+
+(defpoll music  :interval "10s"
+"~/.config/eww/assets/player.sh")
+  ;"playerctl metadata --format '{{ artist }} - {{ title }}'
+  ;"playerctl metadata --format '{{ artist }}'")
+
+;;(deflisten volume `bash ~/.config/eww/scripts/audio --get-volicon`)
+(deflisten anetwork `bash ~/.config/eww/scripts/network --icon`)
+(deflisten battery `bash ~/.config/eww/scripts/battery --icon`)
+
+(defpoll volume :interval "1s"
+  "~/.config/eww/scripts/getvol")
+
+;;(defvar volume 49)
+
+
+(defvar cmd_toggle_calendar "eww open --toggle calendar")
+
+
+(defpoll outdated :interval "1m" "checkupdates|wc -l")
+
+
+(defpoll username :interval "24h" "whoami")
+
+(defpoll key :interval "2s" :initial "es" "~/.config/eww/assets/layout.sh")
+
+(defpoll blueooth :interval "30s" :initial "0" " bluetoothctl devices|wc -l")
+
+;(defpoll clima :interval "10m" ' curl "https://wttr.in/Quito?format=+%c+%t&T"')
+
+(defpoll weat :interval "1h"  'python3 ~/.config/eww/assets/weather3.py')
+
+(defpoll luz :interval "1s" :initial "-1" '~/.config/eww/assets/luz.sh')
+
+(defpoll wos :interval "1s" "~/.config/eww/assets/wos.py")
+
+(defpoll wlansi :interval "20s" "~/.config/eww/assets/red.py wlp0s20f3" )
+(defpoll ethsi :interval "20s" "~/.config/eww/assets/red.py enp0s13f0u1u2" )
+
+(defpoll  moon :interval "1h" "python3 ~/.config/eww/assets/moonphase.py")
+(defpoll sun :interval "1h" "python3 ~/.config/eww/assets/sun.py")
+
+
+(defwidget metric [label value onchange]
+	(box :orientation "h"
+		:class "metric"
+		:space-evenly false
+
+		(box :class "label" label value)
+		(circular-progress
+		:start-at 0
+
+			:value value
+		)
+		(progress :value value :orientation 'h')
+		;;(scale :min 0
+          ;; :max 101
+           ;;:active {onchange != ""}
+           ;;:value value
+           ;;:onchange onchange)
+	)
+)
+
+
+(defwidget imetric [image value ?onclick ?onmiddleclick ?onrightclick ?onscroll ?hide]
+	(eventbox
+:visible {hide!=true}
+;;		:timeout "20s"
+		:onscroll onscroll
+		:onmiddleclick onmiddleclick
+		:onclick onclick
+		:onrightclick onrightclick
+		(box :orientation "h"
+			:class "metric"
+			:space-evenly false
+
+
+			(image
+			:class "imagemetric"
+			:path "${'/home/'+username+'/.config/eww/assets/'+image}" :image-width 30
+:image-height 30)
+			(box :class "label"  value)
+
+		)
+	)
+
+)
+
+(defwidget tray [m]
+    (box :space-evenly false
+   ; (systray :active-only false
+   ;             :pack-direction "ltr"
+   ; )
+(box :class "label" m)
+    (systray)
+(box :class "label" m)
+    )
+)
+
+(defwidget sidestuff [mo]
+
+	(box :class "sidestuff"
+
+	:orientation "h" :space-evenly false :halign "end"
+
+
+	    (imetric
+:class "moon"
+:onclick "exec cliphist list | wofi -S dmenu | cliphist decode | wl-copy"
+	                :image "${'moon'+moon.i+'.png'}" :value  "${round(moon.r, 0)}${(moon.p=='1')?'↓':'↑'}"
+	            )
+
+
+	    (imetric
+:class "sun"
+	                :image "${sun.s+'.png'}" :value  "${sun.d}"
+	             )
+
+
+	    (imetric
+:class "sun"
+	                :image "${weat.i+'.svg'}" :value  "${weat.t}"
+	            )
+
+	            (imetric :image {'med'+((EWW_TEMPS.CORETEMP_PACKAGE_ID_0>90) ? '6':
+	((EWW_TEMPS.CORETEMP_PACKAGE_ID_0>80)? '5' :
+		((EWW_TEMPS.CORETEMP_PACKAGE_ID_0>75) ?'4':
+			((EWW_TEMPS.CORETEMP_PACKAGE_ID_0>70) ?'3':
+				((EWW_TEMPS.CORETEMP_PACKAGE_ID_0 > 60)?'2':
+					((EWW_TEMPS.CORETEMP_PACKAGE_ID_0 > 0 ?'1':
+						'0'
+						)
+					)
+				)
+			)
+		)
+	)
+	    )+'.png'} :value ''
+
+	            )
+
+
+;		(box :class "label" clima )
+
+		(box :class "label2" {round(EWW_TEMPS.CORETEMP_PACKAGE_ID_0, 0)} )
+
+
+	;	(imetric :image ""  :value "${strlength(EWW_NET.enp0s13f0u1u2.NET_UP)}")
+		;(circular-progress   :value 43"${strlength(EWW_NET.enp0s13f0u1u2.NET_UP)}")
+
+;		(box :class "bar"
+;     :space-evenly true
+;  (circular-progress :class "thingy"
+;                   :value {round(strlength(EWW_NET.enp0s13f0u1u2.NET_DOWN)*5, 0)}
+;                   :thickness 15
+;                   :clockwise true
+;                   :start-at 0
+;         ))
+;		(box :class "bar"
+;     :space-evenly true
+;  (circular-progress :class "thingy"
+;                   :value {round(strlength(EWW_NET.wlp0s20f3.NET_DOWN)*5, 0)}
+;                   :thickness 15
+;                   :clockwise true
+;                   :start-at 0
+;         ))
+
+;				(imetric
+;		:image "${'wlan0'+((wlansi!='connected')?'no':'si')+'.png'}"
+;	;	:value "${((EWW_NET.wlp0s20f3.NET_DOWN==0)?'0':strlength(EWW_NET.wlp0s20f3.NET_DOWN))+'/'+((EWW_NET.wlp0s20f3.NET_UP==0)?'0':strlength(EWW_NET.wlp0s20f3.NET_UP))  }"
+;		:value "${EWW_NET}"
+;		)
+;				(imetric
+;		:image "${'eth0'+((ethsi!='connected')?'no':'si')+'.png'}"
+;		:value "${((EWW_NET.enp0s13f0u1u2.NET_DOWN==0)?'0':strlength(EWW_NET.enp0s13f0u1u2.NET_DOWN))+'/'+((EWW_NET.enp0s13f0u1u2.NET_UP==0)?'0':strlength(EWW_NET.enp0s13f0u1u2.NET_UP))  }"
+;		)
+
+(imetric
+
+			:image "${((strlength(EWW_NET.enp0s13f0u1u2.NET_DOWN) <= 2) ? 'ned1.png' :
+			((strlength(EWW_NET.enp0s13f0u1u2.NET_DOWN)  <=5)?'ned2.png':
+			((strlength(EWW_NET.enp0s13f0u1u2.NET_DOWN)  <=12)?'ned3.png':
+			((strlength(EWW_NET.enp0s13f0u1u2.NET_DOWN)  <=16)?'ned4.png':
+			((strlength(EWW_NET.enp0s13f0u1u2.NET_DOWN)  <=17)?'ned5.png':
+			'ned6.png'
+			)
+)
+			)
+
+			)
+
+			)}" :value ""
+			)
+(imetric
+
+			:image "${((strlength(EWW_NET.wlp0s20f3.NET_DOWN) <= 2) ? 'ned1.png' :
+			((strlength(EWW_NET.wlp0s20f3.NET_DOWN)  <=5)?'ned2.png':
+			((strlength(EWW_NET.wlp0s20f3.NET_DOWN)  <=12)?'ned3.png':
+			((strlength(EWW_NET.wlp0s20f3.NET_DOWN)  <=16)?'ned4.png':
+			((strlength(EWW_NET.wlp0s20f3.NET_DOWN)  <=17)?'ned5.png':
+			'ned6.png'
+			)
+)
+			)
+
+			)
+
+			)}" :value ""
+			)
+
+
+	    (imetric
+
+			:image "${((volume <= 0) ? 'vol0.svg' :
+			((volume <=50)?'vol1.svg':
+			((volume <=80)?'vol2.svg':
+			((volume <=120)?'vol3.svg':
+			'vol4.svg'
+			)
+
+			)
+
+			)
+
+			)}"
+	            :value volume
+	            :onscroll "~/.config/eww/assets/avolume.sh {}"
+	            :onclick "pypr toggle volume"
+				:onrightclick "amixer set Master toggle"
+
+	            )
+
+	                (imetric
+	                :hide {mo!=0}
+	                :image "luz.png" :value  {(luz==10)?'': round(luz, 0)}
+				:onscroll "~/.config/eww/assets/aluz.sh {}"
+	            )
+
+
+	    (imetric
+:hide {EWW_BATTERY.total_avg==100}
+:image {'bat'+((EWW_BATTERY.total_avg>90) ? '0':
+	((EWW_BATTERY.total_avg>70)? '1' :
+		((EWW_BATTERY.total_avg>50) ?'2':
+			((EWW_BATTERY.total_avg > 20)?'3':
+				((EWW_BATTERY.total_avg > 10 ?'4':
+					'5'
+					)
+				)
+			)
+		)
+	)
+	    )+'.png'} :value {round(EWW_BATTERY.total_avg, 0)}
+	            )
+
+	            (imetric :image {'med'+((EWW_RAM.used_mem_perc>80) ? '6':
+	((EWW_RAM.used_mem_perc>60)? '5' :
+		((EWW_RAM.used_mem_perc>40)? '4' :
+			((EWW_RAM.used_mem_perc>20) ?'3':
+				((EWW_RAM.used_mem_perc > 10)?'2':
+					((EWW_RAM.used_mem_perc > 0 ?'1':
+						'0'
+						)
+					)
+				)
+			)
+		)
+	)
+	    )+'.png'}
+	            :value {replace(replace(replace(replace(replace(replace((round((EWW_RAM.used_mem/(1024*1024*1024)), 0)%16), '10', 'A'), '11','B'),'12','C'),'13','D'),'14','E'), '15','F')}
+)
+
+	    (imetric :image {'med'+((EWW_CPU.avg>90) ? '6':
+	((EWW_CPU.avg>80)? '5' :
+		((EWW_CPU.avg>60) ?'4':
+			((EWW_CPU.avg>40) ?'3':
+				((EWW_CPU.avg > 20)?'2':
+					((EWW_CPU.avg > 10 ?'1':
+						'0'
+						)
+					)
+				)
+			)
+		)
+	)
+	    )+'.png'} :value {round(EWW_CPU.avg, 0)}
+	    :onclick "pkill -34 sysmenu"
+	            )
+
+
+;	            (imetric :image {'blue'+blueooth+'.png'} :value ""
+;	            :onscroll ""
+;	    :onclick "~/.config/hypr/start.sh"
+;	    :onrightclick "blueman-manager"
+;	    :onmiddleclick "pkexec systemctl restart bluetooth"
+;	            )
+
+	            (imetric :image "${'update'+(outdated>0?'n':'d')+'.png'}" :value "${(outdated>0?outdated:'')}"
+	            :onscroll ""
+	    :onclick "~/.config/hypr/start.sh"
+	    :onrightclick "blueman-manager"
+	    :onmiddleclick "pkexec systemctl restart blueetoth"
+	            )
+
+
+	            (imetric :image "${substring(key, 0, 2)+'.png'}" :value ""
+				:onclick "~/.config/eww/assets/layout.sh -s" :onrightclick "~/.config/eww/images/wvkbd.sh"
+	            )
+
+   (box :class "stray"
+                        (tray :m ".")
+                )
+
+(reloj)
+                        (button :halign "end"
+                                :onclick "hyprctl dispatch exec syspower"
+                              ;;  (image :path "${'/home/'+username+'/.config/eww/assets/'+username+'.png'}"
+                              ;;          :image-width 80 :image-height 30
+                              ;;  )
+                              (label :class "sergio"
+                              :halign "end"
+                              :text username)
+                        )
+
+
+
+    )
+)
+
+(defwidget workspaces0 [?lista mo]
+	
+	(box
+		:orientation "h"
+
+	    (box :class "workspaces"
+
+			(button
+			;;	:timeout "200s"
+				:onclick "hyprctl dispatch exec pkill -34 sysmenu"
+				(image :path "${'/home/'+username+'/.config/eww/assets/yinyang.png'}"
+					:image-width 30 :image-height 30
+				)
+			)
+
+
+
+			(button :onclick "~/.config/eww/assets/work.sh 1"
+			 :onrightclick "~/.config/eww/assets/work.sh 1 -s"    :class  "${((wos[0]==mo)?'as':((wos[0]>=0)?'ws':'ns'))+' '+ (wos[15]==0?'si':'no')}" 1)
+
+			(button :onclick "~/.config/eww/assets/work.sh 2" 
+			 :onrightclick "~/.config/eww/assets/work.sh 2 -s"  :class  "${((wos[1]==mo)?'as':((wos[1]>=0)?'ws':'ns') )+' '+(wos[15]==1?'si':'no')}" 2)
+
+			(button :onclick "~/.config/eww/assets/work.sh  3"
+			 :onrightclick "~/.config/eww/assets/work.sh 3 -s"   :class  "${((wos[2]==mo)?'as':((wos[2]>=0)?'ws':'ns') )+' '+(wos[15]==2?'si':'no')}" 3)
+
+			(button :onclick "~/.config/eww/assets/work.sh 4"
+			 :onrightclick "~/.config/eww/assets/work.sh 4 -s"   :class  "${((wos[3]==mo)?'as':((wos[3]>=0)?'ws':'ns')) +' '+(wos[15]==3?'si':'no')}" 4)
+
+			(button :onclick "~/.config/eww/assets/work.sh 5"
+			 :onrightclick "~/.config/eww/assets/work.sh 5 -s"   :class  "${((wos[4]==mo)?'as':((wos[4]>=0)?'ws':'ns')) +' '+(wos[15]==4?'si':'no')}" 5)
+
+			(button :onclick "~/.config/eww/assets/work.sh 6"
+			 :onrightclick "~/.config/eww/assets/work.sh 6 -s"   :class  "${((wos[5]==mo)?'as':((wos[5]>=0)?'ws':'ns')) +' '+(wos[15]==5?'si':'no')}" 6)
+
+			(button :onclick "~/.config/eww/assets/work.sh 7"
+			 :onrightclick "~/.config/eww/assets/work.sh 7 -s"   :class  "${((wos[6]==mo)?'as':((wos[6]>=0)?'ws':'ns')) +' '+(wos[15]==6?'si':'no')}" 7)
+
+			(button :onclick "~/.config/eww/assets/work.sh 8"
+			 :onrightclick "~/.config/eww/assets/work.sh 8 -s"   :class  "${((wos[7]==mo)?'as':((wos[7]>=0)?'ws':'ns')) +' '+(wos[15]==7?'si':'no')}" 8)
+
+			(button :onclick "~/.config/eww/assets/work.sh 9"
+			 :onrightclick "~/.config/eww/assets/work.sh 9 -s"   :class  "${((wos[8]==mo)?'as':((wos[8]>=0)?'ws':'ns') )+' '+(wos[15]==8?'si':'no')}" 9)
+
+			(button :onclick "~/.config/eww/assets/work.sh 10"
+			 :onrightclick "~/.config/eww/assets/work.sh 10 -s"    :class  "${((wos[9]==mo)?'as':((wos[9]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 0)
+
+			 (button :onclick "~/.config/eww/assets/work.sh 11"
+			 :onrightclick "~/.config/eww/assets/work.sh 11 -s"    :class  "${((wos[10]==mo)?'as':((wos[10]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 1)
+			(button :onclick "~/.config/eww/assets/work.sh 12"
+			 :onrightclick "~/.config/eww/assets/work.sh 12 -s"    :class  "${((wos[11]==mo)?'as':((wos[11]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 2)
+			(button :onclick "~/.config/eww/assets/work.sh 13"
+			 :onrightclick "~/.config/eww/assets/work.sh 13 -s"    :class  "${((wos[12]==mo)?'as':((wos[12]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 3)
+			(button :onclick "~/.config/eww/assets/work.sh 14"
+			 :onrightclick "~/.config/eww/assets/work.sh 14 -s"    :class  "${((wos[13]==mo)?'as':((wos[13]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 4)
+			(button :onclick "~/.config/eww/assets/work.sh 15"
+			 :onrightclick "~/.config/eww/assets/work.sh 15 -s"    :class  "${((wos[14]==mo)?'as':((wos[14]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 5)
+
+
+)
+
+	)
+)
+
+(defwidget reloj []
+(button :onclick "pypr toggle term"
+		(centerbox :halign "center" :class "time" :spacing 1
+
+
+			(label  :text  "${formattime(EWW_TIME,"%d-%m %a")}")
+			;;(label  :text  "${EWW_NET+' rr'}") ;;eth0 wlan0 NET_UP NET_DOWN
+
+;;(label :text "${EWW_NET}")
+			(label  :class "time1"  :text "${formattime(EWW_TIME,"%T")}")
+;;(scale :vvalue 32 :min 0 :max 100;;)
+
+
+			(image :path "${'/home/'+username+'/.config/eww/assets/clock.png'}"
+                                        :image-width 30 :image-height 30
+                                )
+
+		)
+	)
+)
+
+(defwidget barra2 [mo]
+	(box
+	:space-evenly false
+		:orientation "h"
+		(workspaces0
+			:lista workspace0
+			:mo mo
+		)
+(box :hexpand true)
+
+
+		(box :halign "end"
+			(reloj)
+				)
+	)
+)
+
+(defwidget music []
+  (box :class "music"
+       :orientation "h"
+
+     "🎵 ${music}..."
+    )
+    )
+
+(defwidget barra [mo]
+	(box
+	:space-evenly false
+		:orientation "h"
+		(workspaces0
+			:lista workspace0
+			:mo mo
+		)
+(box :hexpand true)
+(music)
+
+(box :hexpand true)
+		
+		(box :halign "end"
+			(sidestuff :mo mo)
+				)
+	)
+)
+
+
+(defwindow bar0
+	:monitor 0
+	:focusable false
+	
+	
+	:geometry (geometry :width "100%" :anchor "top center")
+	:exclusive true	
+	(barra :mo 0)
+	
+)
+
+
+(defwindow bar1
+	:monitor 1
+	:windowtype "dock"
+	:geometry (geometry :width "100%" :anchor "top center")
+	:exclusive true	
+	(barra2
+
+			:mo 1
+		)
+	
+)
+
+(defwindow bar2
+	:monitor 2
+	:windowtype "dock"
+	:geometry (geometry :width "100%" :anchor "top center")
+	:exclusive true	
+	(barra2
+
+			:mo 2
+		)
+	
+)
+
+
+
+
+(defwindow menu
+	:monitor 0
+
+	:windowtype "dock"
+	:geometry (geometry :width "100%" :height "10%" :anchor "center left")
+	:exclusive true
+
+	(box :class "bar"
+	(bmenu :mo 0)
+	)
+
+)

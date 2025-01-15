@@ -1,0 +1,54 @@
+[pyprland]
+plugins = ["scratchpads", "expose", "toggle_special"]
+
+[scratchpads]
+[scratchpads.term]
+command = "kitty --class kitty-dropterm"
+#command = "wezterm"
+animation = "fromTop"
+margin = 50
+#unfocus = "hide"
+size = "85% 75%"
+lazy = true
+max_size = "1920px 100%"
+
+[scratchpads.volume]
+command = "pavucontrol"
+animation = "fromBottom"
+class = "pavucontrol"
+lazy = true
+size = "80% 60%"
+
+
+[scratchpads.code]
+command = "/opt/visual-studio-code/code"
+animation = "fromBottom"
+class = "Code"
+lazy = true
+pinned = false
+size = "90% 80%"
+
+[scratchpads.dolphin]
+command = "dolphin"
+animation = "fromBottom"
+class = "org.kde.dolphin"
+lazy = true
+size = "90% 80%"
+
+
+[scratchpads.thunar]
+command = "thunar"
+animation = "fromBottom"
+class = "thunar"
+lazy = true
+pinned = false
+size = "90% 80%"
+
+
+
+[scratchpads.gnote]
+command = "/sbin/gnote"
+animation = "fromBottom"
+class = "org.gnome.Gnote"
+lazy = true
+size = "80% 60%"

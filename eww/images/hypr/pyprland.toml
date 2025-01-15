@@ -1,0 +1,34 @@
+[pyprland]
+plugins = ["scratchpads"]
+
+[scratchpads]
+[scratchpads.term]
+#command = "kitty --class kitty-dropterm"
+command = "wezterm"
+animation = "fromTop"
+margin = 50
+#unfocus = "hide"
+size = "85% 70%"
+lazy = true
+max_size = "1920px 100%"
+
+[scratchpads.volume]
+command = "pavucontrol"
+animation = "fromBottom"
+class = "pavucontrol"
+lazy = true
+size = "80% 60%"
+
+[scratchpads.dolphin]
+command = "dolphin"
+animation = "fromLeft"
+class = "org.kde.dolphin"
+lazy = true
+
+[scratchpads.zim]
+command = "/usr/bin/zim"
+animation = "fromBottom"
+class = "zim"
+lazy = true
+size = "80% 60%"
+

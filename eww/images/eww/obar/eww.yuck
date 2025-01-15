@@ -1,0 +1,381 @@
+
+
+(deflisten workspace0 "hyprland-workspaces eDP-1")
+(deflisten workspace1 "hyprland-workspaces DP-1")
+(deflisten workspace2 "hyprland-workspaces HDMI-A-1")
+
+
+;;(deflisten volume `bash ../scripts/audio --get-volicon`)
+(deflisten anetwork `bash ../scripts/network --icon`)
+(deflisten battery `bash ../scripts/battery --icon`)
+
+(defpoll volume :interval "1s"
+  "~/.config/eww/scripts/getvol")
+
+
+(defvar cmd_toggle_calendar "eww open --toggle calendar")
+
+
+(defpoll outdated :interval "1m" "checkupdates|wc -l")
+
+
+(defpoll username :interval "24h" "whoami")
+
+(defpoll key :interval "2s" :initial "es" "/home/sergio/.config/layout.sh")
+
+(defpoll blueooth :interval "30s" :initial "0" " bluetoothctl devices|wc -l")
+
+(defpoll clima :interval "10m" ' curl "https://wttr.in/Quito?format=+%c+%t&T"')
+
+(defpoll luz :interval "1s" :initial "-1" 'cat /home/sergio/.luz')
+
+(defpoll wos :interval "1s" "/home/sergio/.config/wos.py")
+
+(defwidget metric [label value onchange]
+	(box :orientation "h"
+		:class "metric"
+		:space-evenly false
+
+		(box :class "label" label value)
+		(circular-progress
+		:start-at 0
+
+			:value value
+		)
+		(progress :value value :orientation 'h')
+		;;(scale :min 0
+          ;; :max 101
+           ;;:active {onchange != ""}
+           ;;:value value
+           ;;:onchange onchange)
+	)
+)
+
+
+(defwidget imetric [image value ?onclick ?onmiddleclick ?onrightclick ?onscroll ?hide]
+	(eventbox
+:visible {hide!=true}
+;;		:timeout "20s"
+		:onscroll onscroll
+		:onmiddleclick onmiddleclick
+		:onclick onclick
+		:onrightclick onrightclick
+		(box :orientation "h"
+			:class "metric"
+			:space-evenly false
+
+
+			(image
+			:class "imagemetric"
+			:path "${'/home/'+username+'/.config/'+image}" :image-width 30
+:image-height 30)
+			(box :class "label"  value)
+
+		)
+	)
+
+)
+
+(defwidget tray []
+    (box
+;;    (system-tray :active-only false
+;;                 :pack-direction "ltr"
+;;    )
+;;    (systray)
+    )
+)
+
+(defwidget sidestuff [mo]
+
+	(box :class "sidestuff"
+
+	:orientation "h" :space-evenly false :halign "end"
+		(box :class "label" clima )
+
+		(box :class "label2" {round(EWW_TEMPS.CORETEMP_PACKAGE_ID_0, 0)} )
+
+		(box :class "stray"
+			(tray) "."
+		)
+
+
+				(imetric
+		:image "${'wlan0'+((EWW_NET.wlp0s20f3.NET_DOWN==0)?'no':'si')+'.png'}"
+		:value "${((EWW_NET.wlp0s20f3.NET_DOWN==0)?'0':strlength(EWW_NET.wlp0s20f3.NET_DOWN))+'/'+((EWW_NET.wlp0s20f3.NET_UP==0)?'0':strlength(EWW_NET.wlp0s20f3.NET_UP))  }"
+
+		)
+				(imetric
+		:image "${'eth0'+((EWW_NET.enp0s13f0u1u2.NET_DOWN==0)?'no':'si')+'.png'}"
+		:value "${((EWW_NET.enp0s13f0u1u2.NET_DOWN==0)?'0':strlength(EWW_NET.enp0s13f0u1u2.NET_DOWN))+'/'+((EWW_NET.enp0s13f0u1u2.NET_UP==0)?'0':strlength(EWW_NET.enp0s13f0u1u2.NET_UP))  }"
+		)
+
+	    (imetric
+
+			:image "${((volume <= 0) ? 'volume0.png' : 'volume1.png')}"
+	            :value volume
+	            :onscroll "~/.config/avolume.sh {}"
+	            :onclick "pypr toggle volume"
+				:onrightclick "amixer set Master toggle"
+
+	            )
+
+	                (imetric
+	                :hide {mo!=0}
+	                :image "luz.png" :value  {round(luz,1)}
+				:onscroll "~/.config/aluz.sh {}"
+	            )
+
+
+	    (imetric
+:hide {EWW_BATTERY.total_avg==100}
+:image {'bat'+((EWW_BATTERY.total_avg>90) ? '0':
+	((EWW_BATTERY.total_avg>70)? '1' :
+		((EWW_BATTERY.total_avg>50) ?'2':
+			((EWW_BATTERY.total_avg > 20)?'3':
+				((EWW_BATTERY.total_avg > 10 ?'4':
+					'5'
+					)
+				)
+			)
+		)
+	)
+	    )+'.png'} :value {round(EWW_BATTERY.total_avg, 0)}
+	            )
+
+	            (imetric :image {'ram'+((EWW_RAM.used_mem_perc>90) ? '5':
+	((EWW_RAM.used_mem_perc>70)? '4' :
+		((EWW_RAM.used_mem_perc>50) ?'3':
+			((EWW_RAM.used_mem_perc > 20)?'2':
+				((EWW_RAM.used_mem_perc > 10 ?'1':
+					'0'
+					)
+				)
+			)
+		)
+	)
+	    )+'.png'}
+	            :value {round((EWW_RAM.used_mem/(1024*1024*1024)), 0)}
+)
+
+	    (imetric :image {'cpu'+((EWW_CPU.avg>90) ? '5':
+	((EWW_CPU.avg>70)? '4' :
+		((EWW_CPU.avg>50) ?'3':
+			((EWW_CPU.avg > 20)?'2':
+				((EWW_CPU.avg > 10 ?'1':
+					'0'
+					)
+				)
+			)
+		)
+	)
+	    )+'.png'} :value {round(EWW_CPU.avg, 0)}
+	    :onclick "/sbin/nwg-processes"
+	            )
+
+
+	            (imetric :image {'blue'+blueooth+'.png'} :value ""
+	            :onscroll ""
+	    :onclick "~/start.sh"
+	    :onrightclick "blueman-manager"
+	    :onmiddleclick "sv restart blueetothd"
+	            )
+
+	            (imetric :image "${'update'+(outdated>0?'n':'d')+'.png'}" :value "${(outdated>0?outdated:'')}"
+	            :onscroll ""
+	    :onclick "~/start.sh"
+	    :onrightclick "blueman-manager"
+	    :onmiddleclick "sv restart blueetothd"
+	            )
+
+
+	            (imetric :image "${substring(key, 0, 2)+'.png'}" :value ""
+				:onclick "~/.config/layout.sh -s" :onrightclick "~/.config/wvkbd.sh"
+	            )
+
+(reloj)
+                        (button :halign "end"
+                                :onclick "hyprctl dispatch exec /sbin/nwg-bar"
+                              ;;  (image :path "${'/home/'+username+'/.config/'+username+'.png'}"
+                              ;;          :image-width 80 :image-height 30
+                              ;;  )
+                              (label :class "sergio"
+                              :halign "end"
+                              :text username)
+                        )
+
+
+
+    )
+)
+
+(defwidget workspaces0 [?lista mo]
+	
+	(box
+		:orientation "h"
+
+	    (box :class "workspaces"
+
+			(button
+			;;	:timeout "200s"
+				:onclick "hyprctl dispatch exec /sbin/nwg-drawer"
+				(image :path "${'/home/'+username+'/.config/start.png'}"
+					:image-width 30 :image-height 30
+				)
+			)
+
+
+
+			(button :onclick "~/.config/work.sh 1"
+			 :onrightclick "~/.config/work.sh 1 -s"    :class  "${((wos[0]==mo)?'as':((wos[0]>=0)?'ws':'ns'))+' '+ (wos[15]==0?'si':'no')}" 1)
+
+			(button :onclick "~/.config/work.sh 2" 
+			 :onrightclick "~/.config/work.sh 2 -s"  :class  "${((wos[1]==mo)?'as':((wos[1]>=0)?'ws':'ns') )+' '+(wos[15]==1?'si':'no')}" 2)
+
+			(button :onclick "~/.config/work.sh  3"
+			 :onrightclick "~/.config/work.sh 3 -s"   :class  "${((wos[2]==mo)?'as':((wos[2]>=0)?'ws':'ns') )+' '+(wos[15]==2?'si':'no')}" 3)
+
+			(button :onclick "~/.config/work.sh 4"
+			 :onrightclick "~/.config/work.sh 4 -s"   :class  "${((wos[3]==mo)?'as':((wos[3]>=0)?'ws':'ns')) +' '+(wos[15]==3?'si':'no')}" 4)
+
+			(button :onclick "~/.config/work.sh 5"
+			 :onrightclick "~/.config/work.sh 5 -s"   :class  "${((wos[4]==mo)?'as':((wos[4]>=0)?'ws':'ns')) +' '+(wos[15]==4?'si':'no')}" 5)
+
+			(button :onclick "~/.config/work.sh 6"
+			 :onrightclick "~/.config/work.sh 6 -s"   :class  "${((wos[5]==mo)?'as':((wos[5]>=0)?'ws':'ns')) +' '+(wos[15]==5?'si':'no')}" 6)
+
+			(button :onclick "~/.config/work.sh 7"
+			 :onrightclick "~/.config/work.sh 7 -s"   :class  "${((wos[6]==mo)?'as':((wos[6]>=0)?'ws':'ns')) +' '+(wos[15]==6?'si':'no')}" 7)
+
+			(button :onclick "~/.config/work.sh 8" 
+			 :onrightclick "~/.config/work.sh 8 -s"   :class  "${((wos[7]==mo)?'as':((wos[7]>=0)?'ws':'ns')) +' '+(wos[15]==7?'si':'no')}" 8)
+
+			(button :onclick "~/.config/work.sh 9" 
+			 :onrightclick "~/.config/work.sh 9 -s"   :class  "${((wos[8]==mo)?'as':((wos[8]>=0)?'ws':'ns') )+' '+(wos[15]==8?'si':'no')}" 9)
+
+			(button :onclick "~/.config/work.sh 10"
+			 :onrightclick "~/.config/work.sh 10 -s"    :class  "${((wos[9]==mo)?'as':((wos[9]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 0)
+
+			 (button :onclick "~/.config/work.sh 11"
+			 :onrightclick "~/.config/work.sh 11 -s"    :class  "${((wos[10]==mo)?'as':((wos[10]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 1)
+			(button :onclick "~/.config/work.sh 12"
+			 :onrightclick "~/.config/work.sh 12 -s"    :class  "${((wos[11]==mo)?'as':((wos[11]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 2)
+			(button :onclick "~/.config/work.sh 13"
+			 :onrightclick "~/.config/work.sh 13 -s"    :class  "${((wos[12]==mo)?'as':((wos[12]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 3)
+			(button :onclick "~/.config/work.sh 14"
+			 :onrightclick "~/.config/work.sh 14 -s"    :class  "${((wos[13]==mo)?'as':((wos[13]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 4)
+			(button :onclick "~/.config/work.sh 15"
+			 :onrightclick "~/.config/work.sh 15 -s"    :class  "${((wos[14]==mo)?'as':((wos[14]>=0)?'ws':'ns') )+' '+(wos[15]==9?'si':'no')}" 5)
+
+
+)
+
+	)
+)
+
+(defwidget reloj []
+(button :onclick "pypr toggle term"
+		(centerbox :halign "center" :class "time" :spacing 1
+
+
+			(label  :text  "${formattime(EWW_TIME,"%m-%d %a")}")
+			;;(label  :text  "${EWW_NET+' rr'}") ;;eth0 wlan0 NET_UP NET_DOWN
+
+;;(label :text "${EWW_NET}")
+			(label  :class "time1"  :text "${formattime(EWW_TIME,"%T")}")
+
+
+			(image :path "${'/home/'+username+'/.config/clock.png'}"
+                                        :image-width 30 :image-height 30
+                                )
+
+		)
+	)
+)
+
+(defwidget barra2 [mo]
+	(box
+	:space-evenly false
+		:orientation "h"
+		(workspaces0
+			:lista workspace0
+			:mo mo
+		)
+(box :hexpand true)
+
+
+		(box :halign "end"
+			(reloj)
+				)
+	)
+)
+
+
+(defwidget barra [mo]
+	(box
+	:space-evenly false
+		:orientation "h"
+		(workspaces0
+			:lista workspace0
+			:mo mo
+		)
+(box :hexpand true)
+
+		
+		(box :halign "end"
+			(sidestuff :mo mo)
+				)
+	)
+)
+
+
+(defwindow bar0
+	:monitor 0
+	:focusable false
+	
+	
+	:geometry (geometry :width "100%" :anchor "top center")
+	:exclusive true	
+	(barra :mo 0)
+	
+)
+
+
+(defwindow bar1
+	:monitor 1
+	:windowtype "dock"
+	:geometry (geometry :width "100%" :anchor "top center")
+	:exclusive true	
+	(barra2
+
+			:mo 1
+		)
+	
+)
+
+(defwindow bar2
+	:monitor 2
+	:windowtype "dock"
+	:geometry (geometry :width "100%" :anchor "top center")
+	:exclusive true	
+	(barra2
+
+			:mo 2
+		)
+	
+)
+
+
+
+
+(defwindow menu
+	:monitor 0
+
+	:windowtype "dock"
+	:geometry (geometry :width "100%" :height "10%" :anchor "center left")
+	:exclusive true
+
+	(box :class "bar"
+	(bmenu :mo 0)
+	)
+
+)
